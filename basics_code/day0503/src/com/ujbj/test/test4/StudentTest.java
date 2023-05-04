@@ -1,5 +1,7 @@
 package com.ujbj.test.test4;
 
+import java.util.Scanner;
+
 public class StudentTest {
     /**
      * 定义一个长度为3的数组，数组存储1~3名学生对象作为初始数据，学生对象的学号，姓名各不相同。
