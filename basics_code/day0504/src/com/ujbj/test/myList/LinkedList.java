@@ -43,19 +43,21 @@ public class LinkedList {
 
     // 删除
     public void delete(String name) {
+        System.out.println(name);
         // 链表为空.没有要删除的
         if (head == null) return;
         ListNode cur = head;
-        // 保留上个节点
+        // 保留上个节点,否则没有节点指向它了
         while (cur.next != null) {
             // 如果相同
-            if (cur.name.equals(name)) {
-               cur = cur.next.next;
-               break;
+            if (cur.next.name.equals(name)) {
+                cur.next = cur.next.next;
+                break;
             }
             cur = cur.next;
         }
     }
+
     // 遍历
     public void printList() {
         if (head == null) return;
