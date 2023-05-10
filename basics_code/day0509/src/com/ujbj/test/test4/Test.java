@@ -1,12 +1,12 @@
 package com.ujbj.test.test4;
 
-import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Test {
     public static void main(String[] args) {
         Shopping shopping = new Shopping();
-
+        Date date = new Date();
         Goods g1 = new Goods("001", "小米", 2000, new Date());
         Goods g2 = new Goods("002", "华为", 2000, new Date());
         Goods g3 = new Goods("003", "三星", 2000, new Date());
