@@ -2,17 +2,19 @@ package com.ujbj.ui;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
-import javax.swing.border.Border;
-import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Random;
 
-public class GameJFrame extends JFrame implements KeyListener {
+public class GameJFrame extends JFrame implements KeyListener, ActionListener {
     // 用来加载图片
     int[][] data = new int[4][4];
     // 定义当前路径
     String path = "PuzzleGame/image/girl/girl1/";
+    // 计算当前步数
+    int step;
 
     // 创建主界面
     public GameJFrame() {
@@ -42,6 +44,11 @@ public class GameJFrame extends JFrame implements KeyListener {
             win.setBounds(203, 273, 197, 73);
             this.getContentPane().add(win);
         }
+
+        // 添加步数,JLabel管理文字和图片
+        JLabel stepText = new JLabel("步数:\t" + step);
+        stepText.setBounds(50, 0, 100, 30);
+        this.getContentPane().add(stepText);
 
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
@@ -91,17 +98,38 @@ public class GameJFrame extends JFrame implements KeyListener {
         }
     }
 
+    JMenuBar gameJMenuBar = new JMenuBar();
+
+    JMenu functionJMenu = new JMenu("功能");
+    JMenu aboutJMenu = new JMenu("关于我们");
+
+    JMenu replaceImg = new JMenu("更换图片");
+    JMenuItem animal = new JMenuItem("动物");
+    JMenuItem motion = new JMenuItem("运动");
+    JMenuItem beauty = new JMenuItem("美女");
+    JMenuItem replayItem = new JMenuItem("重新游戏");
+    JMenuItem LoginAgainItem = new JMenuItem("重新登录");
+    JMenuItem closeItem = new JMenuItem("关闭游戏");
+
+    JMenuItem codeItem = new JMenuItem("公众号");
+
     private void initJMenuBar() {
-        JMenuBar gameJMenuBar = new JMenuBar();
-
-        JMenu functionJMenu = new JMenu("功能");
-        JMenu aboutJMenu = new JMenu("关于我们");
-
-        JMenuItem replayItem = new JMenuItem("重新游戏");
-        JMenuItem LoginAgainItem = new JMenuItem("重新登录");
-        JMenuItem closeItem = new JMenuItem("关闭游戏");
-
-        JMenuItem code = new JMenuItem("公众号");
+        // 添加事件
+        // 给重新游戏添加事件
+        replayItem.addActionListener(this);
+        // 给重新登录添加事件
+        LoginAgainItem.addActionListener(this);
+        // 关闭游戏添加事件
+        closeItem.addActionListener(this);
+        // 公众号添加事件
+        codeItem.addActionListener(this);
+        // 给更换图片添加图片
+        //  1. 给动物添加事件
+        animal.addActionListener(this);
+        //  2. 给运动添加事件
+        motion.addActionListener(this);
+        //  3. 给美女添加事件
+        beauty.addActionListener(this);
 
         // 添加到JMenuBar
         gameJMenuBar.add(functionJMenu);
@@ -109,11 +137,15 @@ public class GameJFrame extends JFrame implements KeyListener {
 
         // 添加到JMenu
         //  1. functionJMenu
+        replaceImg.add(animal);
+        replaceImg.add(motion);
+        replaceImg.add(beauty);
+        functionJMenu.add(replaceImg);
         functionJMenu.add(replayItem);
         functionJMenu.add(LoginAgainItem);
         functionJMenu.add(closeItem);
         //  2. aboutJMenu
-        aboutJMenu.add(code);
+        aboutJMenu.add(codeItem);
 
         // 添加到JFrame
         this.setJMenuBar(gameJMenuBar);
@@ -172,6 +204,7 @@ public class GameJFrame extends JFrame implements KeyListener {
             data[x][y] = data[x + 1][y];
             data[x + 1][y] = 0;
             x++;
+            step++;
             initImage();
         } else if (code == e.VK_DOWN) {
             System.out.println("键盘向下");
@@ -180,6 +213,7 @@ public class GameJFrame extends JFrame implements KeyListener {
             data[x][y] = data[x - 1][y];
             data[x - 1][y] = 0;
             x--;
+            step++;
             initImage();
         } else if (code == e.VK_LEFT) {
             System.out.println("键盘向左");
@@ -188,6 +222,7 @@ public class GameJFrame extends JFrame implements KeyListener {
             data[x][y] = data[x][y + 1];
             data[x][y + 1] = 0;
             y++;
+            step++;
             initImage();
         } else if (code == e.VK_RIGHT) {
             System.out.println("键盘向右");
@@ -195,6 +230,7 @@ public class GameJFrame extends JFrame implements KeyListener {
             data[x][y] = data[x][y - 1];
             data[x][y - 1] = 0;
             y--;
+            step++;
             initImage();
         } else if (code == e.VK_A) {
             initImage();
@@ -217,5 +253,78 @@ public class GameJFrame extends JFrame implements KeyListener {
             }
         }
         return true;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        Random r = new Random();
+        // 获取被点的事件源
+        Object source = e.getSource();
+        if (source == replayItem) {
+            System.out.println("重新游戏");
+            // 计数器清零
+            step = 0;
+            // 初始化数据 打乱数组
+            initDate();
+            // 重新加载图片
+            initImage();
+        } else if (source == LoginAgainItem) {
+            System.out.println("重新登录");
+
+            // 隐藏主界面
+            this.setVisible(false);
+            // 打开登录界面
+            new RegisterJFrame();
+
+        } else if (source == closeItem) {
+            System.out.println("关闭游戏");
+            System.exit(0);
+        } else if (source == codeItem) {
+            System.out.println("公众号");
+
+            // 创建一个弹框对象
+            JDialog jDialog = new JDialog();
+            // 创建一个管理图片的容器对象JLabel
+            JLabel jLabel = new JLabel(new ImageIcon("PuzzleGame/image/about.png"));
+            // 设置位置宽高
+            jLabel.setBounds(0, 0, 400, 400);
+            // 把图片添加到弹框当中
+            jDialog.getContentPane().add(jLabel);
+
+            // 设置弹框大小
+            jDialog.setSize(400, 400);
+            // 让弹窗置顶
+            jDialog.setAlwaysOnTop(true);
+            // 让弹窗居中
+            jDialog.setLocationRelativeTo(null);
+            // 弹框不关闭则无法操作下面的界面
+            jDialog.setModal(true);
+            // 弹框显示
+            jDialog.setVisible(true);
+        } else if (source == animal) {
+            System.out.println("动物");
+
+            int randomNum = r.nextInt(9) + 1;
+            path = "PuzzleGame/image/animal/animal" + randomNum + "/";
+            step = 0;
+            initDate();
+            initImage();
+        } else if (source == motion) {
+            System.out.println("运动");
+
+            int randomNum = r.nextInt(10) + 1;
+            path = "PuzzleGame/image/sport/sport" + randomNum + "/";
+            step = 0;
+            initDate();
+            initImage();
+        } else if (source == beauty) {
+            System.out.println("美女");
+
+            int randomNum = r.nextInt(14) + 1;
+            path = "PuzzleGame/image/girl/girl" + randomNum + "/";
+            step = 0;
+            initDate();
+            initImage();
+        }
     }
 }
