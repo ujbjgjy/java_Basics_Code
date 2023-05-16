@@ -1,11 +1,9 @@
 package com.ujbj.ui;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 
 public class LogInJFrame extends JFrame implements MouseListener {
     // 初始化登录界面
@@ -43,8 +41,11 @@ public class LogInJFrame extends JFrame implements MouseListener {
     JTextField userJTextField = new JTextField();
     // 密码
     JPasswordField pwdJPasswordField = new JPasswordField();
+    // 用户输入验证码
+    JTextField codeJField = new JTextField();
     // 随机码
     String randCode = CodeUtil.codeStr();
+
     private void initImage() {
         // 添加用户名
         JLabel userjLabel = new JLabel(new ImageIcon("PuzzleGame/image/login/用户名.png"));
@@ -63,16 +64,15 @@ public class LogInJFrame extends JFrame implements MouseListener {
         this.getContentPane().add(pwdJPasswordField);
 
         // 添加验证码
-        ImageIcon codeImg = new ImageIcon("PuzzleGame/image/login/验证码.png");
-        JLabel codeJLabel = new JLabel(codeImg);
+        JLabel codeJLabel = new JLabel(new ImageIcon("PuzzleGame/image/login/验证码.png"));
         codeJLabel.setBounds(100, 260, 50, 20);
         this.getContentPane().add(codeJLabel);
         // 添加文本框
-        JTextField codeJField = new JTextField();
         codeJField.setBounds(200, 260, 80, 20);
         this.getContentPane().add(codeJField);
         // 添加随机码
-        JLabel randCodeJLabel = new JLabel(CodeUtil.codeStr());
+        randCode = CodeUtil.codeStr();
+        JLabel randCodeJLabel = new JLabel(randCode);
         randCodeJLabel.setBounds(300, 260, 50, 20);
         this.getContentPane().add(randCodeJLabel);
 
@@ -134,6 +134,15 @@ public class LogInJFrame extends JFrame implements MouseListener {
         jDialog.setVisible(true);
     }
 
+    //创建一个集合存储正确的用户名和密码
+    static ArrayList<User> list = new ArrayList<>();
+
+    static {
+        list.add(new User("ujbj", "wjdsg"));
+        list.add(new User("zhangsan", "123"));
+        list.add(new User("lisi", "1234"));
+    }
+
     public void mouseClicked(MouseEvent e) {
         // 获取触发事件的按钮
         Object source = e.getSource();
@@ -141,8 +150,9 @@ public class LogInJFrame extends JFrame implements MouseListener {
             System.out.println("登录");
             System.out.println("userJTextField = " + userJTextField.getText());
             System.out.println("pwdJPasswordField = " + pwdJPasswordField.getText());
+            System.out.println("codeJField = " + codeJField.getText());
 
-            showJDialog("验证码错误");
+            verification();
         } else if (source == registerBtn) {
             System.out.println("注册");
         }
@@ -179,5 +189,38 @@ public class LogInJFrame extends JFrame implements MouseListener {
     @Override
     public void mouseExited(MouseEvent e) {
 
+    }
+
+    // 判断用户输入是否输入错误
+    public int verification() {
+        if (!codeJField.getText().equals(randCode)) {
+            codeJField.setText("");
+            showJDialog("验证码错误");
+            return -1;
+        }
+        // 代码相同 则登录成功
+        if (!findUser()) {
+            showJDialog("用户名或密码错误");
+            codeJField.setText("");
+            return 0;
+        }
+        this.setVisible(false);
+        new GameJFrame();
+        return 1;
+    }
+
+    public boolean findUser() {
+        String user = userJTextField.getText();
+        String pwd = pwdJPasswordField.getText();
+        for (int i = 0; i < list.size(); i++) {
+            User u = list.get(i);
+            System.out.println(user + "\t" + u.getName());
+            System.out.println(pwd + "\t" + u.getPassword());
+
+            if (u.getName().equals(user) && u.getPassword().equals(pwd)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

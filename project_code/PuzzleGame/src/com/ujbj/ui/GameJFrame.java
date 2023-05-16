@@ -274,7 +274,7 @@ public class GameJFrame extends JFrame implements KeyListener, ActionListener {
             // 隐藏主界面
             this.setVisible(false);
             // 打开登录界面
-            new RegisterJFrame();
+            new LogInJFrame();
 
         } else if (source == closeItem) {
             System.out.println("关闭游戏");
