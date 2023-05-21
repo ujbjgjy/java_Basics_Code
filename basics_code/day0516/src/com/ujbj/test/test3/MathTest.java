@@ -12,7 +12,7 @@ public class MathTest {
      * 九位自幂数：九九重阳数  十位自幂数：十全十美数
      */
     public static void main(String[] args) {
-        for (long l = 100; l < 9999999; l++) {
+        for (long l = 100L; l < 9999999; l++) {
             byte[] temp = getDigit(l);
 
             // 1. 打印水仙花数
